@@ -4,10 +4,13 @@ namespace PersonalFinanceTracker
 {
     class Program
     {
+        // Створюємо єдиний екземпляр FinanceManager для всього додатку
+        private static FinanceManager manager = new FinanceManager();
+
         static void Main(string[] args)
         {
             Console.WriteLine("Ласкаво просимо до Менеджера Особистих Фінансів!");
-            // Тут буде основне меню та логіка програми
+            // Тепер не потрібно передавати менеджер, бо він доступний статично
             ShowMainMenu();
         }
 
@@ -32,15 +35,15 @@ namespace PersonalFinanceTracker
                 {
                     case "1":
                         // TODO: Показати баланс
-                        Console.WriteLine("Функція 'Показати баланс' ще не реалізована.");
+                        HandleShowBalance(); // Викличемо новий метод
                         break;
                     case "2":
                         // TODO: Додати дохід
-                        Console.WriteLine("Функція 'Додати дохід' ще не реалізована.");
+                        HandleAddIncome(); // Викличемо новий метод
                         break;
                     case "3":
                         // TODO: Додати витрату
-                        Console.WriteLine("Функція 'Додати витрату' ще не реалізована.");
+                        HandleAddExpense(); // Викличемо новий метод
                         break;
                     case "4":
                         // TODO: Показати транзакції
@@ -48,11 +51,11 @@ namespace PersonalFinanceTracker
                         break;
                     case "5":
                          // TODO: Керування гаманцями
-                        Console.WriteLine("Функція 'Керування гаманцями' ще не реалізована.");
+                        HandleWalletManagement(); // Викличемо новий метод
                         break;
                     case "6":
                         // TODO: Керування категоріями
-                        Console.WriteLine("Функція 'Керування категоріями' ще не реалізована.");
+                        HandleCategoryManagement(); // Викличемо новий метод
                         break;
                     case "7":
                         // TODO: Обмін валют
@@ -66,6 +69,39 @@ namespace PersonalFinanceTracker
                         break;
                 }
             }
+        }
+
+        // Нові методи-обробники, які будуть реалізовувати Ярик та Захар
+        // Вони використовують статичний `manager`
+
+        static void HandleShowBalance()
+        {
+            // Цю функцію реалізує Ярик
+            Console.WriteLine("Функція 'Показати баланс' буде реалізована Яриком.");
+        }
+
+        static void HandleAddIncome()
+        {
+            // Цю функцію реалізує Захар
+            Console.WriteLine("Функція 'Додати дохід' буде реалізована Захаром.");
+        }
+
+        static void HandleAddExpense()
+        {
+            // Цю функцію реалізує Захар
+            Console.WriteLine("Функція 'Додати витрату' буде реалізована Захаром.");
+        }
+
+        static void HandleWalletManagement()
+        {
+            // Цю функцію реалізує Ярик
+            Console.WriteLine("Функція 'Керування гаманцями' буде реалізована Яриком.");
+        }
+
+        static void HandleCategoryManagement()
+        {
+            // Цю функцію реалізує Захар
+            Console.WriteLine("Функція 'Керування категоріями' буде реалізована Захаром.");
         }
     }
 } 
