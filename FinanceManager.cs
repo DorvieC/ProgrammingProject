@@ -1,13 +1,12 @@
-using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-// using System.Globalization; // Закоментував, бо не використовується безпосередньо тут
 
 namespace PersonalFinanceTracker
 {
+    // Допоміжний клас для серіалізації/десеріалізації всіх даних програми
     public class AppData
     {
         public List<Wallet> Wallets { get; set; } = new List<Wallet>();
@@ -19,29 +18,33 @@ namespace PersonalFinanceTracker
 
     public class FinanceManager
     {
-        private const string DataFileName = "finance_data.json";
+        private const string DataFileName = "finance_data.json"; // Назва файлу для збереження даних
 
         public List<Wallet> Wallets { get; private set; }
         public List<Transaction> Transactions { get; private set; }
         public List<Currency> Currencies { get; private set; }
         public List<IncomeSource> IncomeSources { get; private set; }
         public List<ExpenseCategory> ExpenseCategories { get; private set; }
+        // public CurrencyConverter Converter { get; private set; } // Якщо потрібен, можна розкоментувати
 
         public FinanceManager()
         {
+            // Ініціалізуємо порожні списки спочатку
             Wallets = new List<Wallet>();
             Transactions = new List<Transaction>();
             Currencies = new List<Currency>();
             IncomeSources = new List<IncomeSource>();
             ExpenseCategories = new List<ExpenseCategory>();
 
-            if (!LoadData())
+            if (!LoadData()) // Якщо завантаження не вдалося або файлу даних не існувало
             {
+                // Ініціалізуємо валюти за замовчуванням, якщо дані не завантажено
                 InitializeDefaultCurrencies();
-                SaveData();
+                SaveData(); // Зберігаємо початковий стан з валютами за замовчуванням
             }
         }
 
+        // --- Методи Яріка для гаманців ---
         public void AddWallet(string name, string currencyCode, decimal initialBalance)
         {
             Currency currency = Currencies.Find(c => c.Code.Equals(currencyCode, StringComparison.OrdinalIgnoreCase));
@@ -61,8 +64,8 @@ namespace PersonalFinanceTracker
                 return;
             }
             Wallets.Add(new Wallet(name, currency, initialBalance));
-            Console.WriteLine($"Гаманець '{name}' ({currency.Code}) успішно додано з балансом {initialBalance:N2} {currency.Code}."); // Додано форматування N2
-            SaveData();
+            Console.WriteLine($"Гаманець '{name}' ({currency.Code}) успішно додано з балансом {initialBalance:N2} {currency.Code}.");
+            SaveData(); // Важливо: Зберегти зміни
         }
 
         public void RemoveWallet(string name)
@@ -74,13 +77,14 @@ namespace PersonalFinanceTracker
                 return;
             }
 
-            Console.Write($"Ви впевнені, що хочете видалити гаманець '{name}' з балансом {walletToRemove.Balance:N2} {walletToRemove.WalletCurrency.Code}? (так/ні): "); // Додано форматування N2
+            // Додаткове підтвердження перед видаленням
+            Console.Write($"Ви впевнені, що хочете видалити гаманець '{name}' з балансом {walletToRemove.Balance:N2} {walletToRemove.WalletCurrency.Code}? (так/ні): ");
             string confirmation = Console.ReadLine().Trim().ToLower();
             if (confirmation == "так")
             {
                 Wallets.Remove(walletToRemove);
                 Console.WriteLine($"Гаманець '{name}' успішно видалено.");
-                SaveData();
+                SaveData(); // Важливо: Зберегти зміни
             }
             else
             {
@@ -90,10 +94,9 @@ namespace PersonalFinanceTracker
 
         public List<Wallet> GetWallets()
         {
-            return new List<Wallet>(Wallets);
+            return new List<Wallet>(Wallets); // Повертаємо копію для безпеки
         }
 
-       
         public void DisplayAllWalletsBalances()
         {
             if (Wallets.Count == 0)
@@ -108,7 +111,8 @@ namespace PersonalFinanceTracker
             }
             Console.WriteLine("--------------------------");
         }
-
+        
+        // --- Методи Захара: Керування Джерелами Доходів ---
         public bool AddIncomeSource(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -162,6 +166,7 @@ namespace PersonalFinanceTracker
             Console.WriteLine("-----------------------");
         }
 
+        // --- Методи Захара: Керування Категоріями Витрат ---
         public bool AddExpenseCategory(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -194,8 +199,7 @@ namespace PersonalFinanceTracker
             SaveData();
             return true;
         }
-
-       
+        
         public List<ExpenseCategory> GetExpenseCategories()
         {
             return new List<ExpenseCategory>(ExpenseCategories);
@@ -216,6 +220,7 @@ namespace PersonalFinanceTracker
             Console.WriteLine("------------------------");
         }
 
+        // --- Методи Захара: Додавання Транзакцій Доходів/Витрат ---
         public bool AddIncomeTransaction(string walletName, decimal amount, string sourceName, string description)
         {
             Wallet targetWallet = Wallets.Find(w => w.Name.Equals(walletName, StringComparison.OrdinalIgnoreCase));
@@ -244,7 +249,7 @@ namespace PersonalFinanceTracker
                 targetWallet.WalletCurrency,
                 description,
                 targetWallet,
-                sourceName
+                sourceName 
             );
             Transactions.Add(incomeTransaction);
             Console.WriteLine($"Дохід {amount:N2} {targetWallet.WalletCurrency.Code} успішно додано до гаманця '{walletName}' від '{sourceName}'.");
@@ -285,7 +290,7 @@ namespace PersonalFinanceTracker
                 targetWallet.WalletCurrency,
                 description,
                 targetWallet,
-                categoryName
+                categoryName 
             );
             Transactions.Add(expenseTransaction);
             Console.WriteLine($"Витрату {amount:N2} {targetWallet.WalletCurrency.Code} успішно списано з гаманця '{walletName}' по категорії '{categoryName}'.");
@@ -293,7 +298,7 @@ namespace PersonalFinanceTracker
             return true;
         }
 
-        
+        // --- Методи Давида (з main) ---
         private void InitializeDefaultCurrencies()
         {
             if (!Currencies.Exists(c => c.Code == "USD"))
@@ -353,7 +358,7 @@ namespace PersonalFinanceTracker
 
         public List<Transaction> GetAllTransactions()
         {
-            return new List<Transaction>(Transactions);
+            return new List<Transaction>(Transactions); // Повертаємо копію
         }
 
         public bool ExchangeCurrency(string fromWalletName, string toWalletName, decimal amountToConvert, decimal exchangeRate)
@@ -386,7 +391,6 @@ namespace PersonalFinanceTracker
                 return false;
             }
 
-           
             decimal convertedAmount;
             try
             {
