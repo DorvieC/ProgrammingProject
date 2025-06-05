@@ -76,8 +76,7 @@ namespace PersonalFinanceTracker
 
         static void HandleShowBalance()
         {
-            // Цю функцію реалізує Ярик
-            Console.WriteLine("Функція 'Показати баланс' буде реалізована Яриком.");
+            manager.DisplayAllWalletsBalances();
         }
 
         static void HandleAddIncome()
@@ -94,9 +93,76 @@ namespace PersonalFinanceTracker
 
         static void HandleWalletManagement()
         {
-            // Цю функцію реалізує Ярик
-            Console.WriteLine("Функція 'Керування гаманцями' буде реалізована Яриком.");
+            Console.WriteLine("\n--- Керування гаманцями ---");
+            Console.WriteLine("1. Додати новий гаманець");
+            Console.WriteLine("2. Переглянути список гаманців");
+            Console.WriteLine("3. Видалити гаманець");
+            Console.WriteLine("0. Повернутися до головного меню");
+            Console.Write("Оберіть опцію: ");
+            string choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    Console.Write("Введіть назву гаманця: ");
+                    string nameAdd = Console.ReadLine();
+
+                    Console.WriteLine("Доступні валюти для гаманця:");
+                    if (manager.Currencies.Count == 0)
+                    {
+                        Console.WriteLine("У системі ще немає валют. Спочатку вони мають бути завантажені або додані.");
+                        // Насправді, валюти за замовчуванням завантажуються при старті, якщо немає файлу даних.
+                        // Цей блок може бути не потрібен, якщо валюти завжди є.
+                    }
+                    else
+                    {
+                        foreach (var currency in manager.Currencies)
+                        {
+                            Console.WriteLine($"- {currency.Code} ({currency.Name})");
+                        }
+                    }
+                    Console.Write("Введіть код валюти гаманця (напр., USD): ");
+                    string currencyCodeAdd = Console.ReadLine().ToUpper();
+
+                    Console.Write("Введіть початковий баланс: ");
+                    // Використовуємо CultureInfo.InvariantCulture для коректного парсингу decimal
+                    if (decimal.TryParse(Console.ReadLine(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal balanceAdd))
+                    {
+                        manager.AddWallet(nameAdd, currencyCodeAdd, balanceAdd);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Некоректний формат балансу. Будь ласка, використовуйте крапку як десятковий розділювач (напр., 100.50).");
+                    }
+                    break;
+                case "2":
+                    var walletsView = manager.GetWallets();
+                    if (walletsView.Count == 0)
+                    {
+                        Console.WriteLine("Список гаманців порожній.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\n--- Ваші гаманці ---");
+                        foreach (var wallet in walletsView)
+                        {
+                            Console.WriteLine($"- {wallet.Name} ({wallet.Balance:N2} {wallet.WalletCurrency.Code})"); // Форматування N2
+                        }
+                    }
+                    break;
+                case "3":
+                    Console.Write("Введіть назву гаманця для видалення: ");
+                    string nameRemove = Console.ReadLine();
+                    manager.RemoveWallet(nameRemove);
+                    break;
+                case "0":
+                    return;
+                default:
+                    Console.WriteLine("Невірний вибір.");
+                    break;
+            }
         }
+
 
         static void HandleCategoryManagement()
         {
