@@ -31,5 +31,20 @@ namespace PersonalFinanceTracker
         // - Отримання балансів
         // - Генерації звітів/графіків (текстових)
         // - Обміну валют
+
+
+        //- Додавання/видалення джерел доходу
+
+        // Додання джерала доходу
+        public void AddIncomeSource(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("Ошибка: название не может быть пустым.");
+                return;
+            }
+            IncomeSources.Add(new IncomeSource(name));
+        }
+
     }
 } 
