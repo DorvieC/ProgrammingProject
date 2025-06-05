@@ -1,9 +1,14 @@
 namespace PersonalFinanceTracker
 {
-    public class CurrencyConverter
+    public static class CurrencyConverter
     {
-        // Тут будуть методи для отримання курсів та конвертації
-        // Наприклад: public decimal Convert(decimal amount, Currency fromCurrency, Currency toCurrency)
-        // Для простоти поки можна використовувати "заглушки" з фіксованими курсами
+        public static decimal Convert(decimal amount, decimal exchangeRate)
+        {
+            if (exchangeRate <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(exchangeRate), "Обмінний курс має бути позитивним числом.");
+            }
+            return amount * exchangeRate;
+        }
     }
-} 
+}
