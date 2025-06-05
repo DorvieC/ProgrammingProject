@@ -1,0 +1,25 @@
+# macOS
+    .DS_Store
+    .AppleDouble
+    .LSOverride
+
+    # Rider
+    .idea/
+    *.sln.iml
+
+    # User-specific files
+    *.suo
+    *.user
+    *.userosscache
+    *.sln.docstates
+
+    # Build results
+    [Bb]in/
+    [Oo]bj/
+
+    # Visual Studio
+    .vs/
+    ProjectSettings/
+
+    # Manual file if moved into the project directory
+    manual_for_teammates.txt
